@@ -1,0 +1,56 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion ProjectConfig.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion ProjectConfig.minSdkVersion
+        targetSdkVersion ProjectConfig.targetSdkVersion
+    }
+
+    compileOptions {
+        sourceCompatibility javaVersion
+        targetCompatibility javaVersion
+    }
+
+    kotlinOptions {
+        jvmTarget = javaVersion
+    }
+
+    kotlin {
+        jvmToolchain(javaVersion.toInteger())
+    }
+
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
+    namespace 'cc.mcii.noty.repository'
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = javaVersion
+    }
+}
+
+dependencies {
+
+    // Core Module
+    implementation project(":core")
+
+    // Data Modules
+    api project(":data:local")
+
+    // JavaX Inject
+    implementation "javax.inject:javax.inject:$javaxInjectVersion"
+
+    // Testing
+    testImplementation "io.kotest:kotest-runner-junit5:$kotestVersion"
+    testImplementation "io.kotest:kotest-assertions-core:$kotestVersion"
+    testImplementation "io.kotest:kotest-property:$kotestVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
+}

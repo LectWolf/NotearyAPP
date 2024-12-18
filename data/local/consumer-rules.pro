@@ -1,0 +1,1 @@
+-keep class cc.mcii.noty.data.local.entity.** { *; }

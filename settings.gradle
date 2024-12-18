@@ -1,0 +1,8 @@
+rootProject.name = "Noty"
+
+include ':core'
+include ':data:local'
+include ':repository'
+
+include ':app'
+include ':app:notearyapp'
