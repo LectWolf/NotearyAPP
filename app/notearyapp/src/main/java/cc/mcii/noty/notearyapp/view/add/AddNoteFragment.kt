@@ -2,6 +2,7 @@ package cc.mcii.noty.notearyapp.view.add
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
@@ -26,6 +27,7 @@ class AddNoteFragment : BaseFragment<AddNoteFragmentBinding, AddNoteState, AddNo
                 fieldTitle.addTextChangedListener { viewModel.setTitle(it.toStringOrEmpty()) }
                 fieldNote.addTextChangedListener { viewModel.setNote(it.toStringOrEmpty()) }
             }
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
         }
     }
 
@@ -41,7 +43,7 @@ class AddNoteFragment : BaseFragment<AddNoteFragmentBinding, AddNoteState, AddNo
 
         val errorMessage = state.errorMessage
         if (errorMessage != null) {
-            showErrorDialog("Failed to add a note", errorMessage)
+            showErrorDialog("添加笔记失败", errorMessage)
         }
     }
 
@@ -52,10 +54,16 @@ class AddNoteFragment : BaseFragment<AddNoteFragmentBinding, AddNoteState, AddNo
 
 
     override fun onDestroyView() {
-//        if (viewModel.state.value.showSave && !viewModel.state.value.added){
-//            viewModel.add()
-//        }
         viewModel.resetState()
         super.onDestroyView()
+    }
+
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (viewModel.state.value.showSave) {
+                viewModel.add()
+            }
+            findNavController().navigateUp()
+        }
     }
 }

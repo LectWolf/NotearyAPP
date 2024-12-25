@@ -10,6 +10,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
@@ -33,6 +34,10 @@ import cc.mcii.noty.utils.share.shareNoteText
 import cc.mcii.noty.view.state.NoteDetailState
 import cc.mcii.noty.view.viewmodel.NoteDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Instant
+import java.time.Year
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -44,14 +49,6 @@ class NoteDetailFragment :
     @Inject
     lateinit var viewModelAssistedFactory: NoteDetailViewModel.Factory
 
-    /**
-     * Since we are continuously listening to the [NoteDetailState] for state updates, we get
-     * initial title and note from this model. Also, we continuously tell [NoteDetailViewModel]
-     * about changes to title and note and that ViewModel again let us know about the changes
-     * through the new state. So this forms a continuous cycle of events which can then lead
-     * to the issues. So using this field, we can make sure that whether note is loaded or not.
-     * Once the note is loaded initially, we won't respect further state changes of title and notes.
-     */
     private var isNoteLoaded = false
 
     private var pinMenuItem: MenuItem? = null
@@ -88,6 +85,7 @@ class NoteDetailFragment :
                 fieldTitle.addTextChangedListener { viewModel.setTitle(it.toStringOrEmpty()) }
                 fieldNote.addTextChangedListener { viewModel.setNote(it.toStringOrEmpty()) }
             }
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
         }
     }
 
@@ -96,11 +94,17 @@ class NoteDetailFragment :
 
         val title = state.title
         val note = state.note
+        val time = state.time
+        val wordCount = note?.length
+        val info =
+            time?.let { "${formatNoteTime(it)} | ${wordCount}${getString(R.string.fmt_words)}" }
+                ?: ""
 
         if (title != null && note != null && !isNoteLoaded) {
             isNoteLoaded = true
             binding.noteLayout.fieldTitle.setText(title)
             binding.noteLayout.fieldNote.setText(note)
+            binding.noteLayout.fieldInfo.text = info
         }
 
         if (state.finished) {
@@ -118,6 +122,26 @@ class NoteDetailFragment :
         }
 
     }
+
+    private fun formatNoteTime(timestamp: Long): String {
+        val instant = Instant.ofEpochMilli(timestamp)
+        val localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime()
+
+        val isLastYearOrEarlier = Year.now().value - localDateTime.year > 0
+
+        return when {
+            isLastYearOrEarlier -> {
+                DateTimeFormatter.ofPattern(getString(R.string.fmt_year_date_current))
+                    .format(localDateTime)
+            }
+
+            else -> {
+                DateTimeFormatter.ofPattern(getString(R.string.fmt_date_current))
+                    .format(localDateTime)
+            }
+        }
+    }
+
 
     private fun setupMenu() {
         val menuHost: MenuHost = requireActivity()
@@ -150,7 +174,7 @@ class NoteDetailFragment :
     }
 
     private fun updatePinnedIcon(isPinned: Boolean) {
-        Log.d("调试", "是否置顶:$isPinned 图标:$pinMenuItem")
+        Log.d("调试", "更新状态:${isPinned}")
         pinMenuItem?.run {
             val icon = if (isPinned) R.drawable.ic_pinned else R.drawable.ic_unpinned
             setIcon(icon)
@@ -191,17 +215,27 @@ class NoteDetailFragment :
     ) = NoteDetailFragmentBinding.inflate(inflater, container, false)
 
     private fun confirmNoteDeletion() {
+        getString(R.string.text_negative)
         showDialog(
-            title = "Delete?",
-            message = "Sure want to delete the note?",
-            positiveActionText = "Yes",
+            title = getString(R.string.text_delete),
+            message = getString(R.string.text_delete_tip),
+            positiveActionText = getString(R.string.text_positive),
             positiveAction = { _, _ ->
                 viewModel.delete()
             },
-            negativeActionText = "No",
+            negativeActionText = getString(R.string.text_negative),
             negativeAction = { dialog, _ ->
                 dialog.dismiss()
             }
         )
+    }
+
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (viewModel.state.value.showSave) {
+                viewModel.save()
+            }
+            findNavController().navigateUp()
+        }
     }
 }

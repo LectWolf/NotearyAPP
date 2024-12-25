@@ -1,10 +1,10 @@
 package cc.mcii.noty.view.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import cc.mcii.noty.core.model.Note
-import cc.mcii.noty.core.model.NotyTask
 import cc.mcii.noty.core.repository.NotyNoteRepository
 import cc.mcii.noty.core.task.NotyTaskManager
 import cc.mcii.noty.di.LocalRepository
@@ -58,8 +58,10 @@ class NoteDetailViewModel @AssistedInject constructor(
                     this.isLoading = false
                     this.title = note.title
                     this.note = note.note
+                    this.time = note.update
                     this.isPinned = note.isPinned
                 }
+                Log.d("调试", "加载状态:${note.isPinned}")
             } else {
                 setState {
                     isLoading = false
@@ -81,12 +83,7 @@ class NoteDetailViewModel @AssistedInject constructor(
 
             setState { isLoading = false }
 
-            response.onSuccess { noteId ->
-                if (NotyNoteRepository.isTemporaryNote(noteId)) {
-                    scheduleNoteCreate(noteId)
-                } else {
-                    scheduleNoteUpdate(noteId)
-                }
+            response.onSuccess {
                 setState { finished = true }
             }.onFailure { message ->
                 setState { error = message }
@@ -103,10 +100,7 @@ class NoteDetailViewModel @AssistedInject constructor(
 
             setState { isLoading = false }
 
-            response.onSuccess { noteId ->
-                if (!NotyNoteRepository.isTemporaryNote(noteId)) {
-                    scheduleNoteDelete(noteId)
-                }
+            response.onSuccess {
                 setState { finished = true }
             }.onFailure { message ->
                 setState { error = message }
@@ -126,10 +120,7 @@ class NoteDetailViewModel @AssistedInject constructor(
                 isPinned = !currentState.isPinned
             }
 
-            response.onSuccess { noteId ->
-                if (!NotyNoteRepository.isTemporaryNote(noteId)) {
-                    scheduleNoteUpdatePin(noteId)
-                }
+            response.onSuccess {
             }.onFailure { message ->
                 setState { error = message }
             }
@@ -151,18 +142,6 @@ class NoteDetailViewModel @AssistedInject constructor(
         } catch (error: Throwable) {
         }
     }
-
-    private fun scheduleNoteCreate(noteId: String) =
-        notyTaskManager.scheduleTask(NotyTask.create(noteId))
-
-    private fun scheduleNoteUpdate(noteId: String) =
-        notyTaskManager.scheduleTask(NotyTask.update(noteId))
-
-    private fun scheduleNoteDelete(noteId: String) =
-        notyTaskManager.scheduleTask(NotyTask.delete(noteId))
-
-    private fun scheduleNoteUpdatePin(noteId: String) =
-        notyTaskManager.scheduleTask(NotyTask.pin(noteId))
 
     private fun setState(update: MutableNoteDetailState.() -> Unit) = stateStore.setState(update)
 

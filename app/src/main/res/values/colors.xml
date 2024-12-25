@@ -3,7 +3,7 @@
 <resources>
 
     <color name="primaryColor">#8ED387</color>
-    <color name="primaryLightColor">#f3f3f9</color>
+    <color name="primaryLightColor">#f6f6f6</color>
     <color name="primaryDarkColor">#cccccc</color>
 
     <color name="secondaryColor">#8ED387</color>

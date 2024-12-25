@@ -10,6 +10,7 @@ data class NoteEntity(
     val noteId: String,
     val title: String,
     val note: String,
+    val isPinned: Boolean,
     val created: Long,
-    val isPinned: Boolean
+    val updated: Long   // 更新时间，使用时间戳
 )

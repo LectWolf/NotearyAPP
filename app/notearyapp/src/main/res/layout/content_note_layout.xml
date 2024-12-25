@@ -35,6 +35,19 @@
                 app:layout_constraintVertical_bias="0.0"
                 app:layout_constraintVertical_chainStyle="packed" />
 
+        <TextView
+                android:id="@+id/fieldInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_16"
+                android:layout_marginTop="@dimen/dimen_4"
+                android:layout_marginBottom="@dimen/dimen_16"
+                android:fontFamily="@font/universal_std"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fieldTitle"
+                tools:text="12月17日 15:03 | 26字" />
+
         <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/fieldNote"
                 android:layout_width="match_parent"

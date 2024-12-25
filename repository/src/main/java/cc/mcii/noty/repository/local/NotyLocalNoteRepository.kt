@@ -1,5 +1,6 @@
 package cc.mcii.noty.repository.local
 
+import android.util.Log
 import cc.mcii.noty.core.model.Note
 import cc.mcii.noty.core.repository.Either
 import cc.mcii.noty.core.repository.NotyNoteRepository
@@ -21,10 +22,10 @@ class NotyLocalNoteRepository @Inject constructor(
 
     override fun getNoteById(noteId: String): Flow<Note> = notesDao.getNoteById(noteId)
         .filterNotNull()
-        .map { Note(it.noteId, it.title, it.note, it.created, it.isPinned) }
+        .map { Note(it.noteId, it.title, it.note, it.isPinned, it.created, it.updated) }
 
     override fun getAllNotes(): Flow<Either<List<Note>>> = notesDao.getAllNotes()
-        .map { notes -> notes.map { Note(it.noteId, it.title, it.note, it.created, it.isPinned) } }
+        .map { notes -> notes.map { Note(it.noteId, it.title, it.note, it.isPinned, it.created, it.updated) } }
         .transform { notes -> emit(Either.success(notes)) }
         .catch { emit(Either.success(emptyList())) }
 
@@ -32,21 +33,23 @@ class NotyLocalNoteRepository @Inject constructor(
         title: String,
         note: String
     ): Either<String> = runCatching {
-        val tempNoteId = NotyNoteRepository.generateTemporaryId()
+        val localNoteId = NotyNoteRepository.generateLocalId()
+        val currentTime = System.currentTimeMillis()
         notesDao.addNote(
             NoteEntity(
-                noteId = tempNoteId,
+                noteId = localNoteId,
                 title = title,
                 note = note,
-                created = System.currentTimeMillis(),
-                isPinned = false
+                isPinned = false,
+                created = currentTime,
+                updated = currentTime,
             )
         )
-        Either.success(tempNoteId)
+        Either.success(localNoteId)
     }.getOrDefault(Either.error("无法新建笔记"))
 
     override suspend fun addNotes(notes: List<Note>) = notes.map {
-        NoteEntity(it.id, it.title, it.note, it.created, it.isPinned)
+        NoteEntity(it.id, it.title, it.note, it.isPinned, it.created, it.update)
     }.let {
         notesDao.addNotes(it)
     }
@@ -56,7 +59,7 @@ class NotyLocalNoteRepository @Inject constructor(
         title: String,
         note: String
     ): Either<String> = runCatching {
-        notesDao.updateNoteById(noteId, title, note)
+        notesDao.updateNoteById(noteId, title, note, System.currentTimeMillis())
         Either.success(noteId)
     }.getOrDefault(Either.error("无法更新笔记"))
 
@@ -71,7 +74,4 @@ class NotyLocalNoteRepository @Inject constructor(
     }.getOrDefault(Either.error("无法置顶笔记"))
 
     override suspend fun deleteAllNotes() = notesDao.deleteAllNotes()
-
-    override suspend fun updateNoteId(oldNoteId: String, newNoteId: String) =
-        notesDao.updateNoteId(oldNoteId, newNoteId)
 }

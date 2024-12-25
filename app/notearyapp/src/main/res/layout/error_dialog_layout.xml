@@ -48,7 +48,7 @@
             style="@style/DialogButton"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_60"
-            android:text="@string/text_ok"
+            android:text="@string/text_positive"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

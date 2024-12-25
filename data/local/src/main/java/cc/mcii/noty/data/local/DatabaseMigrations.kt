@@ -6,8 +6,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 object DatabaseMigrations {
     const val DB_VERSION = 2
 
-    val MIGRATIONS: Array<Migration>
-        get() = arrayOf<Migration>(
+    val MIGRATIONS
+        get() = arrayOf(
             migration12()
         )
 

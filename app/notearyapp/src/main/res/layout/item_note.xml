@@ -5,10 +5,14 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimen_4"
+        android:layout_marginStart="@dimen/dimen_16"
+        android:layout_marginTop="@dimen/dimen_4"
+        android:layout_marginEnd="@dimen/dimen_16"
+        android:layout_marginBottom="@dimen/dimen_4"
+        android:foreground="?attr/selectableItemBackground"
         app:cardBackgroundColor="@color/background"
-        app:cardCornerRadius="@dimen/dimen_4"
-        app:cardElevation="@dimen/dimen_0">
+        app:cardCornerRadius="@dimen/dimen_16"
+        app:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -34,26 +38,54 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_16"
-                android:layout_marginTop="@dimen/dimen_12"
+                android:layout_marginTop="@dimen/dimen_4"
                 android:layout_marginEnd="@dimen/dimen_16"
-                android:layout_marginBottom="@dimen/dimen_16"
+                android:layout_marginBottom="@dimen/dimen_4"
                 android:fontFamily="@font/universal_std"
                 android:lineSpacingExtra="5dp"
-                android:maxLines="2"
+                android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/textTime"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textTitle"
                 tools:text="@tools:sample/lorem/random" />
 
-        <ImageView
-                android:id="@+id/pinnedIcon"
+        <TextView
+                android:id="@+id/textTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_8"
-                android:layout_marginEnd="@dimen/dimen_8"
-                android:src="@drawable/ic_pinned"
+                android:layout_marginStart="@dimen/dimen_16"
+                android:layout_marginTop="@dimen/dimen_4"
+                android:layout_marginBottom="@dimen/dimen_16"
+                android:fontFamily="@font/universal_std"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textNote"
+                tools:text="12月17日" />
+
+        <ImageView
+                android:id="@+id/pinningIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_4"
+                android:layout_marginTop="@dimen/dimen_4"
+                android:layout_marginEnd="@dimen/dimen_4"
+                android:src="@drawable/ic_pinning"
                 android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/textTime"
+                app:layout_constraintTop_toBottomOf="@+id/textNote" />
+
+        <ImageButton
+                android:id="@+id/deleteIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/menu_delete"
+                android:src="@drawable/ic_delete"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

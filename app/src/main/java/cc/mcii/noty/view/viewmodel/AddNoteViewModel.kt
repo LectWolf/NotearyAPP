@@ -1,7 +1,6 @@
 package cc.mcii.noty.view.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import cc.mcii.noty.core.model.NotyTask
 import cc.mcii.noty.core.repository.NotyNoteRepository
 import cc.mcii.noty.core.task.NotyTaskManager
 import cc.mcii.noty.di.LocalRepository
@@ -49,7 +48,6 @@ class AddNoteViewModel @Inject constructor(
             val result = noteRepository.addNote(title, note)
 
             result.onSuccess { noteId ->
-                scheduleNoteCreate(noteId)
                 setState {
                     isAdding = false
                     added = true
@@ -63,9 +61,6 @@ class AddNoteViewModel @Inject constructor(
             }
         }
     }
-
-    private fun scheduleNoteCreate(noteId: String) =
-        notyTaskManager.scheduleTask(NotyTask.create(noteId))
 
     private fun validateNote() {
         val isValid = NoteValidator.isValidNote(currentState.title, currentState.note)

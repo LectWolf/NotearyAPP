@@ -9,30 +9,39 @@
     <string name="menu_share_text">文本分享</string>
     <string name="menu_share_image">图片分享</string>
     <string name="menu_settings">设置</string>
+    <string name="menu_note">笔记</string>
+    <string name="menu_todo">待办</string>
 
     <!-- 文本 -->
-    <string name="text_login">登录</string>
-    <string name="text_signup">注册</string>
     <string name="text_save">保存</string>
+    <string name="text_delete">删除</string>
+    <string name="text_delete_tip">确定要删除该笔记吗?</string>
     <string name="text_empty_state_title">没有笔记</string>
     <string name="text_noty_icon">Noteary 图标</string>
     <string name="text_message_share">笔记标题: %s  内容: %s</string>
-    <string name="text_empty_state_detail">当你添加笔记时。您将在此处看到您的笔记</string>
+    <string name="text_empty_state_detail">当你添加笔记时,您将在此处看到您的笔记</string>
     <string name="text_app_version">v%s (%d)</string>
     <string name="text_about_title">关于</string>
     <string name="text_author">开发者: LectWolf</string>
     <string name="text_visit">源代码</string>
     <string name="text_repo_url"><u>https://github.com/LectWolf/NotearyAPP</u></string>
-    <string name="text_ok">OK</string>
+    <string name="text_positive">确定</string>
+    <string name="text_negative">取消</string>
 
     <string name="hint_field_title">标题</string>
     <string name="hint_field_note">开始书写…</string>
 
-    <!-- Messages -->
+    <!-- 格式 -->
+    <string name="fmt_date">M月d日</string>
+    <string name="fmt_current">H:mm</string>
+    <string name="fmt_date_current">M月d日 H:mm</string>
+    <string name="fmt_year_date_current">yyyy年M月d日 H:mm</string>
+    <string name="fmt_words">字</string>
 
-    <!-- Dialog Strings -->
+
+    <!-- 分享 -->
     <string name="dialog_title_failed_image_share">分享图片失败!</string>
-    <string name="dialog_message_failed_image_share">无法共享图像，因为权限被拒绝。为了能够共享图像，请允许存储访问。</string>
+    <string name="dialog_message_failed_image_share">无法共享图像,因为权限被拒绝.为了能够共享图像,请允许存储访问.</string>
 
 
 </resources>

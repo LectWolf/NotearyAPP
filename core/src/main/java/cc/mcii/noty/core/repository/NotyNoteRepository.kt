@@ -64,14 +64,9 @@ interface NotyNoteRepository {
      */
     suspend fun deleteAllNotes()
 
-    /**
-     * Updates ID of a note
-     */
-    suspend fun updateNoteId(oldNoteId: String, newNoteId: String)
-
     companion object {
-        private const val PREFIX_TEMP_NOTE_ID = "TMP"
-        fun generateTemporaryId() = "$PREFIX_TEMP_NOTE_ID-${UUID.randomUUID()}"
-        fun isTemporaryNote(noteId: String) = noteId.startsWith(PREFIX_TEMP_NOTE_ID)
+        private const val PREFIX_LOCAL_NOTE_ID = "LOCAL"
+        fun generateLocalId() = "$PREFIX_LOCAL_NOTE_ID-${UUID.randomUUID()}"
+        fun isLocalNote(noteId: String) = noteId.startsWith(PREFIX_LOCAL_NOTE_ID)
     }
 }

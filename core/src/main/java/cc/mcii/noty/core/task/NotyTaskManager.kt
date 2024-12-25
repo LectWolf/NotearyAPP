@@ -15,13 +15,6 @@ interface NotyTaskManager {
     fun syncNotes(): UUID
 
     /**
-     * Schedules a [NotyTask] task
-     *
-     * @return Unique work ID
-     */
-    fun scheduleTask(notyTask: NotyTask): UUID
-
-    /**
      * Retrieves the state of a task
      *
      * @param taskId Unique work ID

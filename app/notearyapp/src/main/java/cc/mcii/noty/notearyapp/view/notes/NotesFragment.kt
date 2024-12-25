@@ -113,6 +113,7 @@ class NotesFragment : BaseFragment<NotesFragmentBinding, NotesState, NotesViewMo
 
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                     menuInflater.inflate(R.menu.main_menu, menu)
+//                    menuInflater.inflate(R.menu.bottom_nav_menu, menu)
                 }
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -128,9 +129,5 @@ class NotesFragment : BaseFragment<NotesFragmentBinding, NotesState, NotesViewMo
             viewLifecycleOwner,
             Lifecycle.State.RESUMED
         )
-    }
-
-    companion object {
-        const val ANIMATION_DURATION = 2000L
     }
 }

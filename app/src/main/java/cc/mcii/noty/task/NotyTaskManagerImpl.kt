@@ -1,22 +1,18 @@
 package cc.mcii.noty.task
 
 import androidx.lifecycle.asFlow
-import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo.State
 import androidx.work.WorkManager
-import cc.mcii.noty.core.model.NotyTask
 import cc.mcii.noty.core.task.NotyTaskManager
 import cc.mcii.noty.core.task.TaskState
-import cc.mcii.noty.utils.ext.putEnum
 import cc.mcii.noty.worker.NotySyncWorker
-import cc.mcii.noty.worker.NotyTaskWorker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.transformWhile
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,20 +32,6 @@ class NotyTaskManagerImpl @Inject constructor(
         )
 
         return notySyncWorker.id
-    }
-
-    override fun scheduleTask(notyTask: NotyTask): UUID {
-        val notyTaskWorker = OneTimeWorkRequestBuilder<NotyTaskWorker>()
-            .setInputData(generateData(notyTask))
-            .build()
-
-        workManager.enqueueUniqueWork(
-            getTaskIdFromNoteId(notyTask.noteId),
-            ExistingWorkPolicy.REPLACE,
-            notyTaskWorker
-        )
-
-        return notyTaskWorker.id
     }
 
     override fun getTaskState(taskId: UUID): TaskState? = runCatching {
@@ -78,11 +60,6 @@ class NotyTaskManagerImpl @Inject constructor(
         State.FAILED -> TaskState.FAILED
         State.SUCCEEDED -> TaskState.COMPLETED
     }
-
-    private fun generateData(notyTask: NotyTask) = Data.Builder()
-        .putString(NotyTaskWorker.KEY_NOTE_ID, notyTask.noteId)
-        .putEnum(NotyTaskWorker.KEY_TASK_TYPE, notyTask.action)
-        .build()
 
     companion object {
         const val SYNC_TASK_NAME = "NotyTaskManagerImpl"
